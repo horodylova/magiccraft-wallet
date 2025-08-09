@@ -1,0 +1,73 @@
+{
+    "manifest_version": 3,
+    "name": "__MSG_appName__",
+    "description": "__MSG_appDesc__",
+    "default_locale": "en",
+    "version": "1.4.17",
+    "version_name": "1.4.17",
+    "icons": {
+      "16": "assets/extension-icon/wallet_16.png",
+      "32": "assets/extension-icon/wallet_32.png",
+      "48": "assets/extension-icon/wallet_48.png",
+      "128": "assets/extension-icon/wallet_128.png"
+    },
+    "action": { 
+      "default_popup": "index.html",
+      "default_icon": {
+        "16": "assets/extension-icon/wallet_16.png",
+        "32": "assets/extension-icon/wallet_32.png",
+        "48": "assets/extension-icon/wallet_48.png",
+        "128": "assets/extension-icon/wallet_128.png"
+    }
+    },
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiqIZ8DJvTB65sWOlnlndvkd/urpAm8X1If8IazOO7d3sMDt9a/9g7wFuzxGqI37hZaa+keDZSQ+ee3KFL9qurqITPKWj2JSuhUht/Wk+HzfrKA+xv6G/C9OZMN7cnKAk8PLry9EZp9s8Dn+IDKpZJCQxVVmWbkdp431XPQtR62MkhGl2kPkkzs7w3kiX4rAlT+iax3doAe8zxj2NHFa6uLBWAvtm2IYbPl1fJDvpSghWtPMDVkoVYLiYb6qbn/DrhIhlSIxw61HfWuDvlsvQk1gOdGecpsnERLXNfAC/MR5VTYqMHsFweB46Q5JKmw1llosmyIk5igiyHpEObaXGhQIDAQAB",
+    "minimum_chrome_version": "103",
+    "permissions": [
+      "notifications",
+      "activeTab",
+      "storage",
+      "alarms",
+      "unlimitedStorage",
+      "clipboardRead",
+      "clipboardWrite",
+      "contextMenus",
+      "scripting"
+    ],
+    "host_permissions": [
+      "*://*/*"
+    ],
+    "background": {
+        "service_worker": "/src/extension/serviceWorker.ts",
+        "type": "module"
+      },
+      "content_scripts": [
+        {
+          "matches": [
+            "http://*/*",
+            "https://*/*"
+          ],
+          "all_frames": true,
+          "run_at": "document_start",
+          "js": ["/src/extension/content.js"]
+        },
+        {
+          "matches": [
+            "http://*/*",
+            "https://*/*"
+          ],
+          "all_frames": true,
+          "run_at": "document_start",
+          "js": ["/src/extension/inject.js"],
+          "world": "MAIN"
+        }
+      ],
+      "web_accessible_resources": [{
+        "resources": ["src/extension/inject.js"],
+        "matches": ["<all_urls>"]
+      }],
+      "sandbox": {
+        "pages": [
+          "eval-sandbox.html"
+        ]
+      }
+}

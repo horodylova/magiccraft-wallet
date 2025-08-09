@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "BB Wallet",
+    "description": "BB Wallet"
+  },
+  "appDesc": {
+    "message": "An open-source EVM wallet based on ethers, ionic, vue, that implements the metamask API, that works as drop in replacement.",
+    "description": "An open-source EVM wallet based on ethers, ionic, vue, that implements the metamask API, that works as drop in replacement."
+  }
+}

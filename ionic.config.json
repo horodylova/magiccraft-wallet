@@ -1,0 +1,7 @@
+{
+  "name": "BB Wallet",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
