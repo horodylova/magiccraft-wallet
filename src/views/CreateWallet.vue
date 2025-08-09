@@ -258,7 +258,7 @@ const isCreating = ref(false);
 
 const mnemonic = ref('');
 const mnemonicWords = ref<string[]>([]);
-const showMnemonic = ref(true);
+const showMnemonic = ref(false);
 const copied = ref(false);
 const confirmedSaved = ref(false);
 
@@ -390,10 +390,8 @@ const createWallet = async () => {
     const cryptoParams = await getCryptoParams(password.value);
     const encryptedMnemonic = await encrypt(mnemonic.value, cryptoParams);
     
-    // Сохраняем пароль кошелька
     await saveWalletPassword(password.value);
     
-    // Шифруем и сохраняем приватный ключ локально
     const encryptedPrivateKey = await encrypt(wallet.privateKey, cryptoParams);
     await saveEncryptedPrivateKey(wallet.address, encryptedPrivateKey);
     
@@ -446,35 +444,40 @@ const onWalletCreated = () => {
   text-align: center;
   max-width: 500px;
   margin: 0 auto;
+  padding: 0 8px;
 }
 
 .icon-container {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 h2 {
   color: var(--ion-color-primary);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  font-size: 1.4rem;
 }
 
 .description {
   color: var(--ion-color-medium);
-  margin-bottom: 20px;
-  line-height: 1.5;
+  margin-bottom: 16px;
+  line-height: 1.4;
+  font-size: 0.9rem;
 }
 
 .warning-card {
-  margin: 20px 0;
-  background: var(--ion-color-warning-tint);
-  border-left: 4px solid var(--ion-color-warning);
+  margin: 12px 0;
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  border-radius: 8px;
 }
 
 .warning-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
-  color: var(--ion-color-warning-shade);
+  margin-bottom: 8px;
+  color: #856404;
+  font-weight: 600;
 }
 
 .warning-list {
@@ -484,42 +487,45 @@ h2 {
 }
 
 .warning-list li {
-  margin-bottom: 5px;
-  color: var(--ion-color-warning-shade);
+  margin-bottom: 4px;
+  color: #856404;
+  font-size: 0.9rem;
+  line-height: 1.3;
 }
 
 .mnemonic-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin: 20px 0;
+  gap: 8px;
+  margin: 16px 0;
   width: 100%;
 }
 
 .mnemonic-word {
   display: flex;
   align-items: center;
-  padding: 12px;
+  padding: 8px;
   background: var(--ion-color-light);
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid var(--ion-color-medium);
 }
 
 .word-number {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--ion-color-medium);
-  margin-right: 8px;
-  min-width: 20px;
+  margin-right: 6px;
+  min-width: 18px;
 }
 
 .word-text {
   font-weight: 500;
   font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
 }
 
 .mnemonic-hidden {
-  margin: 40px 0;
-  padding: 40px;
+  margin: 24px 0;
+  padding: 24px;
   background: var(--ion-color-light);
   border-radius: 8px;
   color: var(--ion-color-medium);
@@ -527,53 +533,68 @@ h2 {
 
 .action-buttons {
   display: flex;
-  gap: 10px;
-  margin: 20px 0;
+  gap: 8px;
+  margin: 16px 0;
 }
 
 .confirmation-checkbox {
-  margin: 20px 0;
+  margin: 16px 0;
   text-align: left;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.confirmation-checkbox ion-checkbox {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.confirmation-checkbox label {
+  flex: 1;
+  line-height: 1.4;
 }
 
 .continue-button {
-  margin-top: 20px;
+  margin-top: 16px;
 }
 
 .verification-container {
   width: 100%;
-  margin: 20px 0;
+  margin: 16px 0;
 }
 
 .verification-item {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   text-align: left;
 }
 
 .verification-item label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   font-weight: 500;
   color: var(--ion-color-primary);
+  font-size: 0.9rem;
 }
 
 .password-strength {
-  margin: 15px 0;
+  margin: 12px 0;
   text-align: left;
 }
 
 .strength-label {
-  font-size: 14px;
-  margin-bottom: 5px;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
   color: var(--ion-color-medium);
 }
 
 .strength-bar {
-  height: 6px;
+  height: 4px;
   background: var(--ion-color-light);
-  border-radius: 3px;
+  border-radius: 2px;
   overflow: hidden;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .strength-fill {
@@ -598,15 +619,34 @@ h2 {
 }
 
 .strength-text {
-  font-size: 12px;
+  font-size: 0.8rem;
   font-weight: 500;
 }
 
 ion-item {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
+  --padding-start: 0;
+  --padding-end: 0;
 }
 
 ion-button {
-  margin-top: 10px;
+  margin-top: 8px;
+  height: 44px;
+}
+
+ion-card-content {
+  padding: 12px;
+}
+
+ion-content {
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+}
+
+.action-buttons ion-button {
+  height: 40px;
+  font-size: 0.9rem;
 }
 </style>

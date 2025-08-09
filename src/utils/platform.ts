@@ -79,8 +79,7 @@ export const saveContact = async (contact: Contact): Promise<void> => {
 export const replaceContacts = async (contacts: Contact[]): Promise<void> => {
     await storageSave('contacts', contacts)
 }
-
-// Возвращаем удаленные функции
+ 
 export const getAccounts = async (): Promise<Account[]> => {
     const contacts = await getContacts()
     return contacts.map(contact => ({
@@ -333,7 +332,7 @@ export const enableRightClickPasteAddr = async () => {
             contexts: ["editable"],
         });
     } catch (error) {
-        // ignore
+        
     }
 }
 
@@ -353,7 +352,7 @@ export const openTab = (url: string) => {
 
 export const getVersion = () => chrome?.runtime?.getManifest()?.version ?? ''
 
-// Сохраняем зашифрованные приватные ключи локально
+ 
 export const saveEncryptedPrivateKey = async (address: string, encryptedPrivateKey: string): Promise<void> => {
     const keys = await getEncryptedPrivateKeys()
     keys[address.toLowerCase()] = encryptedPrivateKey

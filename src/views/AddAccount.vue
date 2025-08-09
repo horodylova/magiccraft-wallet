@@ -192,33 +192,80 @@ const onCancel = () => {
 
 <style scoped>
 .wallet-options {
-  margin-top: 20px;
+  margin-top: 12px;
 }
 
 .create-button {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
+  height: 40px;
 }
 
 .divider {
   text-align: center;
-  margin: 20px 0;
+  margin: 12px 0;
   position: relative;
-}
-
-.divider::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--ion-color-medium);
 }
 
 .divider span {
   background: var(--ion-background-color);
-  padding: 0 15px;
-  color: var(--ion-color-medium);
-  font-size: 14px;
+  padding: 0 12px;
+  color: var(--ion-color-dark);
+  font-size: 16px;
+  font-weight: 600;
+}
+ 
+.divider::before {
+  display: none;
+}
+
+/* Делаем контент максимально компактным */
+ion-content {
+  --padding-top: 4px;
+  --padding-bottom: 4px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+}
+
+ion-item {
+  --padding-start: 0;
+  --padding-end: 0;
+  margin-bottom: 8px;
+  --min-height: 44px;
+}
+
+ion-button {
+  margin: 6px 0;
+  height: 40px;
+  font-size: 0.9rem;
+}
+
+ion-textarea {
+  --padding-top: 6px;
+  --padding-bottom: 6px;
+}
+
+ 
+ion-textarea::part(native) {
+  min-height: 60px !important;
+}
+
+ 
+ion-header ion-toolbar {
+  --min-height: 44px;
+}
+
+ion-title {
+  font-size: 1.1rem;
+}
+
+ 
+ion-input {
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+}
+
+ 
+ion-buttons ion-button {
+  font-size: 0.9rem;
 }
 </style>
