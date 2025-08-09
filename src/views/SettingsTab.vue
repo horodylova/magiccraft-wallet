@@ -64,8 +64,8 @@
           </div>
           <div class="ion-padding" slot="content">
             <ion-item>
-              <ion-label>锁屏密码</ion-label>
-              <ion-button color="danger" @click="resetWalletPassword">重置</ion-button>
+              <ion-label>Lock Screen Password</ion-label>
+              <ion-button @click="resetWalletPassword">Reset</ion-button>
             </ion-item>
           </div>
         </ion-accordion>

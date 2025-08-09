@@ -61,12 +61,12 @@
               </ion-list>
             </ion-item>
             <ion-item>
-              <ion-button @click="onCancel">取消</ion-button>
+              <ion-button @click="onCancel">Cancel</ion-button>
               <ion-button v-if="networkCase === 'exists'" @click="onSwitchExists"
                 >Switch</ion-button
               >
               <ion-button v-else @click="onSwitchTemplates"
-                >添加或切换网络</ion-button
+                >Add or Switch Network</ion-button
               >
             </ion-item>
           </ion-list>
@@ -77,8 +77,8 @@
             <ion-item>Do you want to go to {{ addChainUrl }}</ion-item>
             <ion-item>To add it manually.</ion-item>
             <ion-item>
-              <ion-button @click="onCancel">拒绝</ion-button>
-              <ion-button @click="onSwitchNotExisting">同意</ion-button>
+              <ion-button @click="onCancel">Reject</ion-button>
+              <ion-button @click="onSwitchNotExisting">Agree</ion-button>
             </ion-item>
           </ion-list>
         </ion-item>

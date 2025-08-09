@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-button @click="onCancel">返回</ion-button>
+          <ion-button @click="onCancel" color="light">Cancel</ion-button>
         </ion-buttons>
         <ion-title>Personal Sign</ion-title>
       </ion-toolbar>
@@ -114,7 +114,7 @@
         ></ion-textarea>
       </ion-item>
       <ion-item>
-        <ion-button @click="onCancel" color="light">取消</ion-button>
+        <ion-button @click="onCancel" color="light">Cancel</ion-button>
         <ion-button @click="getSignature">Get Signature</ion-button>
       </ion-item>
 

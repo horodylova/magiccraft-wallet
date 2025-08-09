@@ -146,8 +146,8 @@
             ></ion-input>
           </ion-item>
           <ion-item>
-            <ion-button @click="saveActionModal = false">取消</ion-button>
-            <ion-button @click="saveAction">保存</ion-button>
+            <ion-button @click="saveActionModal = false">Cancel</ion-button>
+            <ion-button @click="saveAction">Save</ion-button>
           </ion-item>
         </ion-list>
       </ion-content>

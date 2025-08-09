@@ -72,8 +72,8 @@
               </ion-list>
             </ion-item>
             <ion-item>
-              <ion-button @click="onCancel">取消</ion-button>
-              <ion-button @click="onAddSwitch">添加或切换网络</ion-button>
+              <ion-button @click="onCancel">Cancel</ion-button>
+              <ion-button @click="onAddSwitch">Add or Switch Network</ion-button>
             </ion-item>
           </ion-list>
         </ion-item>

@@ -2,7 +2,10 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>编辑钱包</ion-title>
+        <ion-buttons slot="start">
+          <ion-button @click="onCancel">Cancel</ion-button>
+        </ion-buttons>
+        <ion-title>Edit Wallet</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -11,13 +14,8 @@
         <ion-input label="Name" labelPlacement="stacked" v-model="name"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-button @click="onCancel">取消</ion-button>
-        <ion-button
-          @click="onEditAccount()"
-          expand="full"
-          color="primary"
-          >修改钱包</ion-button
-        >
+        <ion-button @click="onCancel" color="light">Cancel</ion-button>
+        <ion-button @click="onEditAccount">Edit Wallet</ion-button>
       </ion-item>
       <ion-alert
         :is-open="alertOpen"

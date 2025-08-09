@@ -137,7 +137,7 @@
       <ion-header>
         <ion-toolbar>
           <ion-buttons slot="start">
-            <ion-button @click="saveActionModal = false">Close</ion-button>
+            <ion-button @click="saveActionModal = false">Cancel</ion-button>
           </ion-buttons>
           <ion-title>Select</ion-title>
         </ion-toolbar>

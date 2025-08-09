@@ -30,7 +30,7 @@
         ></ion-input>
       </ion-item>
       <ion-item>
-        <ion-button @click="close">取消</ion-button>
+        <ion-button @click="close">Cancel</ion-button>
         <ion-button @click="onAddContact">{{
           isEdit ? "Edit Contact" : "Add Contact"
         }}</ion-button>

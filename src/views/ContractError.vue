@@ -41,7 +41,7 @@
         ></ion-textarea>
       </ion-item>
       <ion-item>
-        <ion-button @click="onCancel">退出</ion-button>
+        <ion-button @click="onCancel">Exit</ion-button>
       </ion-item>
 
       <ion-loading

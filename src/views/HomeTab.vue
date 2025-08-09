@@ -26,15 +26,15 @@
     </ion-header>
     <ion-content class="ion-padding">
       <ion-item v-if="loading || accounts.length < 1">
-        <ion-label>没有发现 EVM 钱包</ion-label>
+        <ion-label>No EVM wallets found</ion-label>
       </ion-item>
       <ion-list v-else>
         <ion-item>
           <ion-label>
-            <span style="color: #aca3bb; font-weight: bold; font-size: 0.85rem">[ 当前选择钱包 ]:</span>&nbsp;
+            <span style="color: #aca3bb; font-weight: bold; font-size: 0.85rem">[ Current Wallet ]:</span>&nbsp;
 
             {{ selectedAccount?.name }}</ion-label>
-          <ion-button @click="openAccountsModal">选择</ion-button>
+          <ion-button @click="openAccountsModal">Select</ion-button>
         </ion-item>
         <ion-item button @click="
           copyText(
@@ -56,19 +56,19 @@
               )
             )
             " class="ion-text-wrap" expand="block"
-            style="margin: auto; width: 98%; font-size: 0.8rem; padding: 0.6rem">在
+            style="margin: auto; width: 98%; font-size: 0.8rem; padding: 0.6rem">View current address on
             {{
               `${selectedNetwork.explorer}`
                 .replace("https://", "")
                 .replace("http://", "")
                 .replace(/\/.*/, "")
-            }}上查看当前地址
+            }}
           </ion-button>
         </ion-item>
       </ion-list>
       <ion-item v-if="loading || Object.keys(networks).length < 1">
-        <ion-label>没有发现 EVM 网络</ion-label>
-        <ion-button @click="goToAddNetwork">添加网络</ion-button>
+        <ion-label>No EVM networks found</ion-label>
+        <ion-button @click="goToAddNetwork">Add Network</ion-button>
       </ion-item>
       <ion-item style="font-size: 0.86rem" v-else>
         <ion-avatar v-if="(allTemplateNets as any)[selectedNetwork?.chainId]?.icon"
@@ -77,7 +77,7 @@
             :src="getUrl('assets/chain-icons/' + (allTemplateNets as any)[selectedNetwork?.chainId]?.icon)" />
         </ion-avatar>
         <ion-label button @click="copyText(String(selectedNetwork?.chainId), getToastRef())" style="cursor: pointer">
-          <span style="color: #aca3bb; font-weight: bold; font-size: 0.85rem">[ 当前选择网络 ]:</span>
+          <span style="color: #aca3bb; font-weight: bold; font-size: 0.85rem">[ Current Network ]:</span>
           &nbsp;
           <span style="font-weight: bold">{{ selectedNetwork?.chainId }}</span>
           <ion-icon style="margin-left: 0.5rem; top: 2px; position: relative" :icon="copyOutline"></ion-icon>
@@ -87,7 +87,7 @@
             networksModal = true;
             toastState = false;
           }
-        ">选择</ion-button>
+        ">Select</ion-button>
       </ion-item>
 
       <ion-loading :is-open="loading" cssClass="my-custom-class" message="Please wait..." :duration="4000"
@@ -101,9 +101,9 @@
       <ion-header>
         <ion-toolbar>
           <ion-buttons slot="start">
-            <ion-button @click="accountsModal = false">关闭</ion-button>
+            <ion-button @click="accountsModal = false">Close</ion-button>
           </ion-buttons>
-          <ion-title>选择钱包</ion-title>
+          <ion-title>Select Wallet</ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding" ref="contentRef">

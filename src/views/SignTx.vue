@@ -4,7 +4,7 @@
       <ion-toolbar>
         <ion-title>
           <p style="margin-bottom: 0.5rem">
-            发送交易
+            Send Transaction
             {{
               `${
                 intialSelectedAccount?.name
@@ -23,7 +23,7 @@
               margin-left: 0.5rem;
             "
           >
-            来自: {{ intialSelectedAccount?.address }}
+            From: {{ intialSelectedAccount?.address }}
           </p>
           <p
             v-if="website"
@@ -35,7 +35,7 @@
               margin-left: 0.5rem;
             "
           >
-            请求域名: <b>{{ website }}</b>
+            Request Domain: <b>{{ website }}</b>
           </p>
           <p style="margin: 0; padding: 0; margin-top: 0.5rem; font-size: 0">&nbsp;</p>
         </ion-title>
@@ -44,7 +44,7 @@
 
     <ion-content class="ion-padding">
       <ion-item
-        ><ion-label>网络名称: {{ selectedNetwork?.name }}</ion-label></ion-item
+        ><ion-label>Network Name: {{ selectedNetwork?.name }}</ion-label></ion-item
       >
       <ion-item>
         <ion-avatar
@@ -56,22 +56,22 @@
             :src="getUrl('assets/chain-icons/' + (allTemplateNets as any)[selectedNetwork?.chainId]?.icon)"
           />
         </ion-avatar>
-        <ion-label>网络ID: {{ selectedNetwork?.chainId }}</ion-label>
+        <ion-label>Network ID: {{ selectedNetwork?.chainId }}</ion-label>
       </ion-item>
       <ion-item>
-        <ion-label>待签署&发送的 &amp; 交易</ion-label>
+        <ion-label>Transaction to Sign & Send</ion-label>
       </ion-item>
       <ion-item>
-        执行前余额: {{ userBalance }}
+        Balance Before: {{ userBalance }}
         <span
           style="font-size: 0.9rem; opacity: 0.7; margin-left: 1rem"
           v-if="dollarPrice > 0"
           >${{ (dollarPrice * userBalance).toFixed(3) }}</span
         >
       </ion-item>
-      <ion-item> 合约地址: {{ contract }} </ion-item>
+      <ion-item> Contract Address: {{ contract }} </ion-item>
       <ion-item>
-        总花费: {{ totalCost }}
+        Total Cost: {{ totalCost }}
         <span
           style="font-size: 0.9rem; opacity: 0.7; margin-left: 1rem"
           v-if="dollarPrice > 0"
@@ -79,7 +79,7 @@
         >
       </ion-item>
       <ion-item>
-        手续费: {{ gasFee }}
+        Gas Fee: {{ gasFee }}
         <span
           style="font-size: 0.9rem; opacity: 0.7; margin-left: 1rem"
           v-if="dollarPrice > 0"
@@ -90,13 +90,13 @@
       <ion-item>
         Gas Limit: {{ gasLimit }}
         <ion-button style="margin-left: 1rem" @click="gasLimitModal = true"
-          >设置</ion-button
+          >Set</ion-button
         >
       </ion-item>
       <ion-item>
         Gas Price: {{ gasPrice }}
         <ion-button style="margin-left: 1rem" @click="gasPriceModal = true"
-          >设置</ion-button
+          >Set</ion-button
         >
       </ion-item>
       <ion-item>
@@ -111,9 +111,9 @@
         ></ion-textarea>
       </ion-item>
       <ion-item>
-        <ion-button @click="onCancel">取消</ion-button>
+        <ion-button @click="onCancel">Cancel</ion-button>
         <ion-button :disabled="insuficientBalance" @click="onSign">{{
-          insuficientBalance ? "余额不足" : "发送"
+          insuficientBalance ? "Insufficient Balance" : "Send"
         }}</ion-button>
       </ion-item>
       <ion-alert
@@ -146,7 +146,7 @@
             <ion-buttons slot="start">
               <ion-button @click="gasLimitModal = false">Close</ion-button>
             </ion-buttons>
-            <ion-title>设置 Gas Limit</ion-title>
+            <ion-title>Set Gas Limit</ion-title>
           </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
@@ -162,7 +162,7 @@
               ></ion-input>
             </ion-item>
             <ion-item>
-              <ion-button @click="setGasLimit">设置</ion-button>
+              <ion-button @click="setGasLimit">Set</ion-button>
             </ion-item>
           </ion-list>
         </ion-content>
@@ -172,9 +172,9 @@
         <ion-header>
           <ion-toolbar>
             <ion-buttons slot="start">
-              <ion-button @click="gasPriceModal = false">关闭</ion-button>
+              <ion-button @click="gasPriceModal = false">Close</ion-button>
             </ion-buttons>
-            <ion-title>设置 Gas Price</ion-title>
+            <ion-title>Set Gas Price</ion-title>
           </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
@@ -190,7 +190,7 @@
               ></ion-input>
             </ion-item>
             <ion-item>
-              <ion-button @click="setGasPrice">设置</ion-button>
+              <ion-button @click="setGasPrice">Set</ion-button>
             </ion-item>
           </ion-list>
         </ion-content>

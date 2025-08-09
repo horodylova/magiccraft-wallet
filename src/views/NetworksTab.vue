@@ -16,7 +16,7 @@
     <ion-content class="ion-padding">
       <ion-item v-if="loading || Object.keys(networks).length < 1">
         <ion-label>No EVM Networks found</ion-label>
-        <ion-button @click="goToAddNetwork">添加网络</ion-button>
+        <ion-button @click="goToAddNetwork">Add Network</ion-button>
       </ion-item>
 
       <ion-list v-for="network of networks" :key="network.chainId">
@@ -41,6 +41,11 @@
         </ion-item>
       </ion-list>
     </ion-content>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button @click="addNetwork">
+        <ion-icon :icon="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
   </ion-page>
 </template>
 
@@ -64,7 +69,7 @@ import {
   IonAvatar,
 } from "@ionic/vue";
 import { allTemplateNets } from "@/utils/networks";
-import { addCircleOutline, copyOutline } from "ionicons/icons";
+import { addCircleOutline, copyOutline, add } from "ionicons/icons";
 import router from "@/router/index";
 import type { Networks } from "@/extension/types";
 
@@ -92,6 +97,10 @@ const editNetwork = (chainId: number) => {
 
 const goToAddNetwork = () => {
   router.push("/tabs/add-network");
+};
+
+const addNetwork = () => {
+  router.push("/add-network");
 };
 
 onIonViewWillEnter(() => {

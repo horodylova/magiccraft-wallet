@@ -9,7 +9,7 @@
             </ion-button>
           </router-link>
         </ion-buttons>
-        <ion-title>钱包</ion-title>
+        <ion-title>Wallets</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -30,7 +30,7 @@
             <ion-icon class="copy-icon" :icon="copyOutline"></ion-icon>
           </ion-item>
           <ion-item>
-            <ion-chip @click="editAccount(item.address)">修改名称</ion-chip>
+            <ion-chip @click="editAccount(item.address)">Edit Name</ion-chip>
           </ion-item>
         </RecycleScroller>
 

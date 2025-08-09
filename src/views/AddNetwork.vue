@@ -2,16 +2,16 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>{{ isEdit ? "编辑网络" : "添加网络" }}</ion-title>
+        <ion-title>{{ isEdit ? "Edit Network" : "Add Network" }}</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
       <ion-button v-if="!isEdit" @click="templateModal = true" expand="block"
-        >添加常见网络</ion-button
+        >Add Common Networks</ion-button
       >
       <ion-item>
         <ion-input
-          label="网络名称(*)"
+          label="Network Name(*)"
           labelPlacement="stacked"
           v-model="name"
           placeholder="ex: Polygon"
@@ -19,7 +19,7 @@
       </ion-item>
       <ion-item>
         <ion-input
-          label="链ID(*)"
+          label="Chain ID(*)"
           labelPlacement="stacked"
           v-model="chainId"
           placeholder="137"
@@ -42,7 +42,7 @@
       </ion-item>
       <ion-item button>
         <ion-input
-          label="原生代币名称"
+          label="Native Token Name"
           labelPlacement="stacked"
           id="native-token"
           placeholder="MATIC"
@@ -56,7 +56,7 @@
           style="margin-right: 0.5rem; cursor: pointer"
         />
         <ion-input
-          label="区块浏览器"
+          label="Block Explorer"
           labelPlacement="stacked"
           id="pasteExplorer"
           placeholder="https://polygonscan.com"
@@ -64,9 +64,9 @@
         ></ion-input>
       </ion-item>
       <ion-item>
-        <ion-button @click="onCancel">取消</ion-button>
+        <ion-button @click="onCancel">Cancel</ion-button>
         <ion-button @click="onAddNetwork">{{
-          isEdit ? "编辑网络" : "添加网络"
+          isEdit ? "Edit Network" : "Add Network"
         }}</ion-button>
       </ion-item>
       <ion-alert

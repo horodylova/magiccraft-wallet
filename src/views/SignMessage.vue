@@ -47,8 +47,8 @@
         </div>
       </ion-item>
       <ion-item>
-        <ion-button @click="onCancel">取消</ion-button>
-        <ion-button @click="onSign">签署</ion-button>
+        <ion-button @click="onCancel">Cancel</ion-button>
+        <ion-button @click="onSign">Sign</ion-button>
       </ion-item>
       <ion-item style="margin-top: 6px"
         >Auto-reject Timer:&nbsp;<b>{{ timerReject }}</b></ion-item

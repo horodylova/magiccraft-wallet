@@ -2,9 +2,9 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>解锁</ion-title>
+        <ion-title>Unlock</ion-title>
         <ion-buttons slot="end">
-          <ion-button @click="close" color="primary">关闭</ion-button>
+          <ion-button @click="close" color="primary">Close</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
@@ -12,7 +12,7 @@
     <ion-content class="ion-padding">
       <ion-list>
         <ion-item>
-          <ion-label>解锁密码</ion-label>
+          <ion-label>Unlock Password</ion-label>
         </ion-item>
         <ion-list>
           <ion-item>
@@ -29,22 +29,13 @@
               :spellcheck="false"
               id="pass-input"
             >
-              <div slot="label"><ion-text color="danger">(密码)</ion-text></div>
+              <div slot="label"><ion-text color="danger">(Password)</ion-text></div>
             </ion-input>
-
-            <!-- <ion-input
-            label="Password"
-            label-placement="floating"
-            fill="outline"
-            placeholder=""
-            type="password"
-            @ion-input="mpPass = String($event.target.value)"
-          ></ion-input> -->
           </ion-item>
         </ion-list>
       </ion-list>
       <ion-item>
-        <ion-button @click="unlock">确认</ion-button>
+        <ion-button @click="unlock">Confirm</ion-button>
       </ion-item>
       <ion-alert
         :is-open="alertOpen"
