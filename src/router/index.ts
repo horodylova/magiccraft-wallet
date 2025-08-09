@@ -9,6 +9,10 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/tabs/home',
   },
   {
+    path: '/create-wallet',
+    component: () => import('@/views/CreateWallet.vue'),
+  },
+  {
     path: '/sign-msg/:rid/:param/:website',
     component: () => import('@/views/SignMessage.vue'),
   },

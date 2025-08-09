@@ -86,4 +86,17 @@ export class PatronClient {
       origin
     })
   }
+
+  async createAccount(mnemonic: string, password: string): Promise<string> {
+    return await this.request('/createAccount', {
+      mnemonic,
+      password
+    })
+  }
+
+  async importAccount(privateKey: string): Promise<string> {
+    return await this.request('/importAccount', {
+      privateKey
+    })
+  }
 }

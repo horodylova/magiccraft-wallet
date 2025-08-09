@@ -54,16 +54,13 @@ export const saveNetwork = async (network: Network): Promise<void> => {
     await storageSave('networks', saveNetworks)
 }
 
-
 export const getSelectedNetwork  = async (): Promise<Network > => {
     return (await storageGet('selectedNetwork'))?.selectedNetwork ?? null as unknown as Network 
 }
 
-
 export const saveSelectedNetwork  = async (selectedNetwork: Network ): Promise<void> => {
     await storageSave('selectedNetwork', selectedNetwork )
 }
-
 
 export const getContacts = async (): Promise<Contact[]> => {
     return (await storageGet('contacts')).contacts ?? [] as Contact[]
@@ -83,41 +80,26 @@ export const replaceContacts = async (contacts: Contact[]): Promise<void> => {
     await storageSave('contacts', contacts)
 }
 
+// Возвращаем удаленные функции
 export const getAccounts = async (): Promise<Account[]> => {
-    console.log("?")
-    let contacts = await getContacts()
-    let contactMap = {}
-    for(let contact of contacts) {
-        contactMap[contact.address.toLocaleLowerCase()] = contact.name
-    }
-    let accounts = await walletGetAccounts()
-    return accounts.map((account, i) => {
-        let name = contactMap[account.toLocaleLowerCase()]
-        if(!name) {
-            name = 'wallet ' + (i + 1)
-        }
-        
-        return {
-            name,
-            address: account
-        }
-    })
-}
-
-export const saveAccount = async (account: Account): Promise<void> => {
-    const savedAccounts = await getAccounts()
-    await storageSave('accounts', [account, ...savedAccounts])
+    const contacts = await getContacts()
+    return contacts.map(contact => ({
+        name: contact.name,
+        address: contact.address
+    }))
 }
 
 export const replaceAccounts = async (accounts: Account[]): Promise<void> => {
-    await storageSave('accounts', accounts)
+    const contacts = accounts.map(account => ({
+        name: account.name,
+        address: account.address
+    }))
+    await replaceContacts(contacts)
 }
-
 
 export const getSelectedAccount = async (): Promise<Account> => {
     return (await storageGet('selectedAccount'))?.selectedAccount ?? null as unknown as Account
 }
-
 
 export const saveSelectedAccount = async (selectedAccount: Account): Promise<void> => {
     await storageSave('selectedAccount', selectedAccount )
@@ -260,7 +242,6 @@ export const getCachedFcAuthToken = async (): Promise<string> => {
     return (await storageGet('fcAuthToken'))?.fcAuthToken ?? ''
 }
 
-
 export const blockLockout = async (): Promise<Settings> => {
     const settings = await getSettings()
     settings.lockOutBlocked = true
@@ -294,7 +275,6 @@ export const smallRandomString = (size = 7) => {
         return str.substring(0, size)
     }
 }
-
 
 export const hexTostr = (hexStr: string) => {
     if (hexStr.substring(0, 2) !== '0x') {
@@ -372,3 +352,19 @@ export const openTab = (url: string) => {
 }
 
 export const getVersion = () => chrome?.runtime?.getManifest()?.version ?? ''
+
+// Сохраняем зашифрованные приватные ключи локально
+export const saveEncryptedPrivateKey = async (address: string, encryptedPrivateKey: string): Promise<void> => {
+    const keys = await getEncryptedPrivateKeys()
+    keys[address.toLowerCase()] = encryptedPrivateKey
+    await storageSave('encryptedPrivateKeys', keys)
+}
+
+export const getEncryptedPrivateKeys = async (): Promise<{[address: string]: string}> => {
+    return (await storageGet('encryptedPrivateKeys'))?.encryptedPrivateKeys ?? {}
+}
+
+export const getEncryptedPrivateKey = async (address: string): Promise<string | null> => {
+    const keys = await getEncryptedPrivateKeys()
+    return keys[address.toLowerCase()] || null
+}

@@ -5,7 +5,7 @@
         <ion-buttons slot="start">
           <ion-button @click="onCancel">Cancel</ion-button>
         </ion-buttons>
-        <ion-title>Edit Wallet</ion-title>
+        <ion-title>{{ isEditing ? 'Edit Wallet' : 'Add Wallet' }}</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -13,10 +13,39 @@
       <ion-item>
         <ion-input label="Name" labelPlacement="stacked" v-model="name"></ion-input>
       </ion-item>
-      <ion-item>
-        <ion-button @click="onCancel" color="light">Cancel</ion-button>
-        <ion-button @click="onEditAccount">Edit Wallet</ion-button>
-      </ion-item>
+
+      <div v-if="!isEditing" class="wallet-options">
+        <ion-button @click="createNewWallet" fill="solid" expand="block" class="create-button">
+          <ion-icon :icon="addOutline" slot="start"></ion-icon>
+          Create New Wallet
+        </ion-button>
+
+        <div class="divider">
+          <span>OR</span>
+        </div>
+
+        <ion-item>
+          <ion-textarea 
+            label="Private Key" 
+            labelPlacement="stacked" 
+            v-model="privateKey"
+            placeholder="Enter private key to import existing wallet"
+            :rows="3"
+          ></ion-textarea>
+        </ion-item>
+        
+        <ion-button @click="importWallet" fill="outline" expand="block">
+          <ion-icon :icon="downloadOutline" slot="start"></ion-icon>
+          Import Wallet
+        </ion-button>
+      </div>
+
+      <div v-if="isEditing">
+        <ion-button @click="onEditAccount" expand="block">
+          Save Changes
+        </ion-button>
+      </div>
+
       <ion-alert
         :is-open="alertOpen"
         header="Error"
@@ -29,7 +58,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import {
   IonContent,
   IonHeader,
@@ -37,112 +66,159 @@ import {
   IonTitle,
   IonToolbar,
   IonItem,
-  IonLabel,
   IonInput,
   IonButton,
   IonAlert,
   IonIcon,
   onIonViewWillEnter,
-  modalController,
-  IonModal,
   IonButtons,
   IonTextarea,
 } from "@ionic/vue";
 import { ethers } from "ethers";
 import {
   saveSelectedAccount,
-  getAccounts,
+  getContacts,
   saveContact,
-  smallRandomString,
-  paste,
-  getSettings,
-  replaceAccounts,
+  getWalletPassword,
+  saveEncryptedPrivateKey
 } from "@/utils/platform";
+import { encrypt, getCryptoParams } from '@/utils/webCrypto';
 import router from "@/router";
 import { useRoute } from "vue-router";
-import type { Account, Settings } from "@/extension/types";
-import UnlockModal from "@/views/UnlockModal.vue";
-import { encrypt, getCryptoParams } from "@/utils/webCrypto";
-
-import { clipboardOutline } from "ionicons/icons";
-import { getFromMnemonic, getRandomPk } from "@/utils/wallet";
-import { setUnlockModalState } from "@/utils/unlockStore";
+import type { Contact } from "@/extension/types";
+import { addOutline, downloadOutline } from "ionicons/icons";
 
 const name = ref("");
+const privateKey = ref("");
 const alertOpen = ref(false);
 const alertMsg = ref("");
 const route = useRoute();
 const paramAddress = route.params.address ?? "";
 
-let accountsProm: Promise<Account[] | undefined>;
-let settingsProm: Promise<Settings | undefined>;
+const isEditing = computed(() => !!paramAddress);
 
-const resetFields = () => {
-  name.value = "";
-};
-
-const openModal = async () => {
-  const modal = await modalController.create({
-    component: UnlockModal,
-    animated: true,
-    focusTrap: false,
-    backdropDismiss: false,
-    componentProps: {
-      unlockType: "addAccount",
-    },
-  });
-  await modal.present();
-  setUnlockModalState(true);
-  const { role, data } = await modal.onWillDismiss();
-  if (role === "confirm") return data;
-  setUnlockModalState(false);
-  return false;
-};
+let contactsProm: Promise<Contact[] | undefined>;
 
 onIonViewWillEnter(async () => {
   if (paramAddress) {
-    accountsProm = getAccounts();
-    settingsProm = getSettings();
-    const accounts = (await accountsProm) as Account[];
-    const acc = accounts.find((account) => account.address === paramAddress);
-    if (acc) {
-      name.value = acc.name;
+    contactsProm = getContacts();
+    const contacts = (await contactsProm) as Contact[];
+    const contact = contacts.find((contact) => contact.address === paramAddress);
+    if (contact) {
+      name.value = contact.name;
     }
+  } else {
+    name.value = "";
   }
 });
 
+const createNewWallet = () => {
+  router.push('/create-wallet');
+};
 
-const onEditAccount = async () => {
-  console.log("??")
+const importWallet = async () => {
   if (name.value.length < 1) {
     alertMsg.value = "Name cannot be empty.";
     alertOpen.value = true;
     return;
   }
-  const accounts = (await accountsProm) as Account[];
-  const account = accounts.find((acc) => acc.address === paramAddress);
-  if (!account) {
+
+  if (!privateKey.value.trim()) {
+    alertMsg.value = "Private key cannot be empty.";
+    alertOpen.value = true;
+    return;
+  }
+
+  try {
+    const wallet = new ethers.Wallet(privateKey.value);
+    
+    const password = await getWalletPassword();
+    
+    if (!password) {
+      alertMsg.value = "Please unlock your wallet first.";
+      alertOpen.value = true;
+      return;
+    }
+    
+    const cryptoParams = await getCryptoParams(password);
+    const encryptedPrivateKey = await encrypt(privateKey.value, cryptoParams);
+    await saveEncryptedPrivateKey(wallet.address, encryptedPrivateKey);
+    
+    const contact = {
+      address: wallet.address,
+      name: name.value
+    };
+    
+    await saveContact(contact);
+    await saveSelectedAccount(contact);
+    
+    router.push('/tabs/home');
+    
+  } catch (error) {
+    console.error('Import error:', error);
+    alertMsg.value = "Invalid private key.";
+    alertOpen.value = true;
+  }
+};
+
+const onEditAccount = async () => {
+  if (name.value.length < 1) {
+    alertMsg.value = "Name cannot be empty.";
+    alertOpen.value = true;
+    return;
+  }
+  
+  const contacts = (await contactsProm) as Contact[];
+  const contact = contacts.find((contact) => contact.address === paramAddress);
+  if (!contact) {
     alertMsg.value = "Account not found.";
     alertOpen.value = true;
     return;
   }
-  const savedAcc = {
-    address: account.address,
+  
+  const savedContact = {
+    address: contact.address,
     name: name.value,
   };
 
-  await saveContact(savedAcc);
+  await saveContact(savedContact);
   router.push("/tabs/accounts");
-};
-
-
-
-const getRandomName = () => {
-  name.value = smallRandomString();
 };
 
 const onCancel = () => {
   router.push("/tabs/accounts");
 };
-
 </script>
+
+<style scoped>
+.wallet-options {
+  margin-top: 20px;
+}
+
+.create-button {
+  margin-bottom: 20px;
+}
+
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--ion-color-medium);
+}
+
+.divider span {
+  background: var(--ion-background-color);
+  padding: 0 15px;
+  color: var(--ion-color-medium);
+  font-size: 14px;
+}
+</style>
