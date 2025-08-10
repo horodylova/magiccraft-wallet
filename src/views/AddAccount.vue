@@ -24,20 +24,45 @@
           <span>OR</span>
         </div>
 
-        <ion-item>
-          <ion-textarea 
-            label="Private Key" 
-            labelPlacement="stacked" 
-            v-model="privateKey"
-            placeholder="Enter private key to import existing wallet"
-            :rows="3"
-          ></ion-textarea>
-        </ion-item>
-        
-        <ion-button @click="importWallet" fill="outline" expand="block">
-          <ion-icon :icon="downloadOutline" slot="start"></ion-icon>
-          Import Wallet
-        </ion-button>
+        <div class="wallet-options">
+          <ion-segment v-model="importMethod" @ionChange="onImportMethodChange">
+            <ion-segment-button value="privateKey">
+              <ion-label>Private Key</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="mnemonic">
+              <ion-label>Seed Phrase</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+
+          <div v-if="importMethod === 'privateKey'">
+            <ion-item>
+              <ion-textarea 
+                label="Private Key" 
+                labelPlacement="stacked" 
+                v-model="privateKey"
+                placeholder="Enter private key (64 hex characters)"
+                :rows="3"
+              ></ion-textarea>
+            </ion-item>
+          </div>
+
+          <div v-if="importMethod === 'mnemonic'">
+            <ion-item>
+              <ion-textarea 
+                label="Seed Phrase" 
+                labelPlacement="stacked" 
+                v-model="mnemonicPhrase"
+                placeholder="Enter 12 or 24 word seed phrase"
+                :rows="4"
+              ></ion-textarea>
+            </ion-item>
+          </div>
+          
+          <ion-button @click="importWallet" fill="outline" expand="block">
+            <ion-icon :icon="downloadOutline" slot="start"></ion-icon>
+            Import Wallet
+          </ion-button>
+        </div>
       </div>
 
       <div v-if="isEditing">
@@ -58,7 +83,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import {
   IonContent,
   IonHeader,
@@ -73,6 +98,9 @@ import {
   onIonViewWillEnter,
   IonButtons,
   IonTextarea,
+  IonSegment,
+  IonSegmentButton,
+  IonLabel,
 } from "@ionic/vue";
 import { ethers } from "ethers";
 import {
@@ -99,7 +127,36 @@ const isEditing = computed(() => !!paramAddress);
 
 let contactsProm: Promise<Contact[] | undefined>;
 
+const importMethod = ref('privateKey');
+const mnemonicPhrase = ref('');
+
+watch(name, (newValue) => {
+  localStorage.setItem('addAccount_name', newValue);
+});
+
+watch(privateKey, (newValue) => {
+  localStorage.setItem('addAccount_privateKey', newValue);
+});
+
+watch(mnemonicPhrase, (newValue) => {
+  localStorage.setItem('addAccount_mnemonicPhrase', newValue);
+});
+
+watch(importMethod, (newValue) => {
+  localStorage.setItem('addAccount_importMethod', newValue);
+});
+
 onIonViewWillEnter(async () => {
+  const savedName = localStorage.getItem('addAccount_name');
+  const savedPrivateKey = localStorage.getItem('addAccount_privateKey');
+  const savedMnemonicPhrase = localStorage.getItem('addAccount_mnemonicPhrase');
+  const savedImportMethod = localStorage.getItem('addAccount_importMethod');
+  
+  if (savedName) name.value = savedName;
+  if (savedPrivateKey) privateKey.value = savedPrivateKey;
+  if (savedMnemonicPhrase) mnemonicPhrase.value = savedMnemonicPhrase;
+  if (savedImportMethod) importMethod.value = savedImportMethod;
+
   if (paramAddress) {
     contactsProm = getContacts();
     const contacts = (await contactsProm) as Contact[];
@@ -107,13 +164,16 @@ onIonViewWillEnter(async () => {
     if (contact) {
       name.value = contact.name;
     }
-  } else {
+  } else if (!savedName) {
     name.value = "";
   }
 });
 
 const createNewWallet = () => {
   router.push('/create-wallet');
+};
+
+const onImportMethodChange = () => {
 };
 
 const importWallet = async () => {
@@ -123,14 +183,24 @@ const importWallet = async () => {
     return;
   }
 
-  if (!privateKey.value.trim()) {
-    alertMsg.value = "Private key cannot be empty.";
-    alertOpen.value = true;
-    return;
-  }
-
   try {
-    const wallet = new ethers.Wallet(privateKey.value);
+    let wallet: ethers.Wallet | ethers.HDNodeWallet;
+
+    if (importMethod.value === 'privateKey') {
+      if (!privateKey.value.trim()) {
+        alertMsg.value = "Private key cannot be empty.";
+        alertOpen.value = true;
+        return;
+      }
+      wallet = new ethers.Wallet(privateKey.value);
+    } else {
+      if (!mnemonicPhrase.value.trim()) {
+        alertMsg.value = "Seed phrase cannot be empty.";
+        alertOpen.value = true;
+        return;
+      }
+      wallet = ethers.Wallet.fromPhrase(mnemonicPhrase.value);
+    }
     
     const password = await getWalletPassword();
     
@@ -141,7 +211,7 @@ const importWallet = async () => {
     }
     
     const cryptoParams = await getCryptoParams(password);
-    const encryptedPrivateKey = await encrypt(privateKey.value, cryptoParams);
+    const encryptedPrivateKey = await encrypt(wallet.privateKey, cryptoParams);
     await saveEncryptedPrivateKey(wallet.address, encryptedPrivateKey);
     
     const contact = {
@@ -152,11 +222,16 @@ const importWallet = async () => {
     await saveContact(contact);
     await saveSelectedAccount(contact);
     
+    localStorage.removeItem('addAccount_name');
+    localStorage.removeItem('addAccount_privateKey');
+    localStorage.removeItem('addAccount_mnemonicPhrase');
+    localStorage.removeItem('addAccount_importMethod');
+    
     router.push('/tabs/home');
     
   } catch (error) {
     console.error('Import error:', error);
-    alertMsg.value = "Invalid private key.";
+    alertMsg.value = `Invalid ${importMethod.value}. Please check your input.`;
     alertOpen.value = true;
   }
 };
@@ -186,6 +261,10 @@ const onEditAccount = async () => {
 };
 
 const onCancel = () => {
+  localStorage.removeItem('addAccount_name');
+  localStorage.removeItem('addAccount_privateKey');
+  localStorage.removeItem('addAccount_mnemonicPhrase');
+  localStorage.removeItem('addAccount_importMethod');
   router.push("/tabs/accounts");
 };
 </script>
