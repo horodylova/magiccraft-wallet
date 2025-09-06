@@ -1,4 +1,4 @@
-# Clear EVM wallet
+# Clear EVM wallet update
 
 ![CLW LOGO](/public/assets/extension-icon/wallet_128.png?raw=true "CLW LOGO")
 
